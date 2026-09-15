@@ -1,0 +1,92 @@
+name: Bug Report
+description: Create a report to help us improve and fix issues in the Reminder app
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue! Please fill out the sections below to help us understand and resolve the bug efficiently.
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the problem here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Explain the steps required to trigger the bug.
+      placeholder: |
+        1. Open the Reminder app
+        2. Navigate to '...'
+        3. Tap on '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: A concise description of what you expected to happen.
+      placeholder: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened instead.
+      placeholder: What actually happened?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device-os
+    attributes:
+      label: Android Version
+      description: Which version of Android is running on your device?
+      options:
+        - "Android 15 (API 35/36)"
+        - "Android 14 (API 34)"
+        - "Android 13 (API 33)"
+        - "Android 12 / 12L (API 31/32)"
+        - "Android 11 (API 30)"
+        - "Android 10 (API 29)"
+        - "Android 9 or older (API 28-)"
+    validations:
+      required: true
+
+  - type: input
+    id: device-model
+    attributes:
+      label: Device Manufacturer & Model
+      description: Example: Google Pixel 8, Samsung Galaxy S24, Xiaomi 13
+      placeholder: e.g., Google Pixel 8
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: App Version
+      description: The version of the Reminder app where the issue occurred (found in Settings or APK filename).
+      placeholder: e.g., 1.0.1 (build 102)
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context / Screenshots / Logs
+      description: Add any relevant screenshots, screen recordings, or logcat output.
+      placeholder: Attach images or paste logs here...
+    validations:
+      required: false

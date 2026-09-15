@@ -1,0 +1,45 @@
+name: Feature Request
+description: Suggest an idea or enhancement for the Reminder app
+title: "[Feature]: "
+labels: ["enhancement", "proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We appreciate suggestions for making Reminder even better! Please provide details about your proposed feature.
+
+  - type: textarea
+    id: problem-statement
+    attributes:
+      label: Problem or Motivation
+      description: Is your feature request related to a problem or limitation in the current workflow?
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution / Feature Description
+      description: Describe the solution or new feature you would like to see.
+      placeholder: Provide a clear explanation of how the feature should work...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives-considered
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: Describe any alternative approaches or existing tools...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context / Mockups
+      description: Add any mockups, references from iOS Reminders / Material 3, or other helpful details.
+      placeholder: Attach reference screenshots or notes here...
+    validations:
+      required: false

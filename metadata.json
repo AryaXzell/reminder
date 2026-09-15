@@ -1,0 +1,6 @@
+{
+  "name": "Reminder",
+  "description": "An elegant Reminder app styled like iOS Reminders with clean layout, lists, and task management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

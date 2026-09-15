@@ -1,0 +1,36 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Modern minimalist List symbol foreground in white -->
+    <group android:translateX="0" android:translateY="0">
+        <!-- Bullet 1 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M32,38m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
+        <!-- Line 1 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M44,35.5h34c1.38,0 2.5,1.12 2.5,2.5s-1.12,2.5 -2.5,2.5H44c-1.38,0 -2.5,-1.12 -2.5,-2.5s1.12,-2.5 2.5,-2.5z" />
+
+        <!-- Bullet 2 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M32,54m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
+        <!-- Line 2 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M44,51.5h34c1.38,0 2.5,1.12 2.5,2.5s-1.12,2.5 -2.5,2.5H44c-1.38,0 -2.5,-1.12 -2.5,-2.5s1.12,-2.5 2.5,-2.5z" />
+
+        <!-- Bullet 3 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M32,70m-5,0a5,5 0 1,0 10,0a5,5 0 1,0 -10,0" />
+        <!-- Line 3 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M44,67.5h34c1.38,0 2.5,1.12 2.5,2.5s-1.12,2.5 -2.5,2.5H44c-1.38,0 -2.5,-1.12 -2.5,-2.5s1.12,-2.5 2.5,-2.5z" />
+    </group>
+</vector>
