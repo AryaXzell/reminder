@@ -7,6 +7,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
+import androidx.compose.ui.unit.IntOffset
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -68,40 +77,67 @@ fun MainContent(viewModel: ReminderViewModel) {
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            when (val screen = currentScreen) {
-                is Screen.Onboarding -> {
-                    OnboardingScreen(
-                        onContinueClick = { viewModel.completeOnboarding() }
-                    )
-                }
-                is Screen.Dashboard -> {
-                    DashboardScreen(
-                        viewModel = viewModel,
-                        onNavigateToList = { listId -> viewModel.navigateTo(Screen.ListDetail(listId)) },
-                        onNavigateToSmartList = { type -> viewModel.navigateTo(Screen.SmartListDetail(type)) },
-                        onNavigateToNewList = { listId -> viewModel.navigateTo(Screen.NewList(listId)) }
-                    )
-                }
-                is Screen.ListDetail -> {
-                    ListDetailScreen(
-                        viewModel = viewModel,
-                        listId = screen.listId,
-                        onBack = { viewModel.popBackStack() }
-                    )
-                }
-                is Screen.SmartListDetail -> {
-                    ListDetailScreen(
-                        viewModel = viewModel,
-                        smartType = screen.type,
-                        onBack = { viewModel.popBackStack() }
-                    )
-                }
-                is Screen.NewList -> {
-                    NewListScreen(
-                        viewModel = viewModel,
-                        listId = screen.listId,
-                        onDismiss = { viewModel.popBackStack() }
-                    )
+            val iosEasing = CubicBezierEasing(0.25f, 0.1f, 0.25f, 1.0f)
+            val animationSpec = tween<Float>(durationMillis = 320, easing = iosEasing)
+            val intAnimationSpec = tween<IntOffset>(durationMillis = 320, easing = iosEasing)
+
+            AnimatedContent(
+                targetState = currentScreen,
+                transitionSpec = {
+                    val isPush = targetState != Screen.Dashboard && targetState != Screen.Onboarding
+                    if (isPush) {
+                        (slideInHorizontally(animationSpec = intAnimationSpec) { width -> width } +
+                                fadeIn(animationSpec = animationSpec))
+                            .togetherWith(
+                                slideOutHorizontally(animationSpec = intAnimationSpec) { width -> -width / 3 } +
+                                        fadeOut(animationSpec = animationSpec)
+                            )
+                    } else {
+                        (slideInHorizontally(animationSpec = intAnimationSpec) { width -> -width / 3 } +
+                                fadeIn(animationSpec = animationSpec))
+                            .togetherWith(
+                                slideOutHorizontally(animationSpec = intAnimationSpec) { width -> width } +
+                                        fadeOut(animationSpec = animationSpec)
+                            )
+                    }
+                },
+                label = "iOSScreenTransition"
+            ) { screen ->
+                when (screen) {
+                    is Screen.Onboarding -> {
+                        OnboardingScreen(
+                            onContinueClick = { viewModel.completeOnboarding() }
+                        )
+                    }
+                    is Screen.Dashboard -> {
+                        DashboardScreen(
+                            viewModel = viewModel,
+                            onNavigateToList = { listId -> viewModel.navigateTo(Screen.ListDetail(listId)) },
+                            onNavigateToSmartList = { type -> viewModel.navigateTo(Screen.SmartListDetail(type)) },
+                            onNavigateToNewList = { listId -> viewModel.navigateTo(Screen.NewList(listId)) }
+                        )
+                    }
+                    is Screen.ListDetail -> {
+                        ListDetailScreen(
+                            viewModel = viewModel,
+                            listId = screen.listId,
+                            onBack = { viewModel.popBackStack() }
+                        )
+                    }
+                    is Screen.SmartListDetail -> {
+                        ListDetailScreen(
+                            viewModel = viewModel,
+                            smartType = screen.type,
+                            onBack = { viewModel.popBackStack() }
+                        )
+                    }
+                    is Screen.NewList -> {
+                        NewListScreen(
+                            viewModel = viewModel,
+                            listId = screen.listId,
+                            onDismiss = { viewModel.popBackStack() }
+                        )
+                    }
                 }
             }
         }

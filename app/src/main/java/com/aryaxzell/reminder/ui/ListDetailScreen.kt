@@ -3,6 +3,10 @@ package com.aryaxzell.reminder.ui
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -700,6 +704,15 @@ fun ReminderRowItem(
         }
     )
 
+    val checkScale by animateFloatAsState(
+        targetValue = if (reminder.isCompleted) 1.05f else 1.0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMediumLow
+        ),
+        label = "checkScale"
+    )
+
     SwipeToDismissBox(
         state = dismissState,
         backgroundContent = {
@@ -743,6 +756,7 @@ fun ReminderRowItem(
                     // Circle checkbox matching list color
                     Box(
                         modifier = Modifier
+                            .graphicsLayer(scaleX = checkScale, scaleY = checkScale)
                             .size(24.dp)
                             .clip(CircleShape)
                             .border(1.5.dp, if (reminder.isCompleted) listColor else iOSSilver, CircleShape)

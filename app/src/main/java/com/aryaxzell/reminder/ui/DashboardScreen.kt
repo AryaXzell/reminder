@@ -1,7 +1,19 @@
 package com.aryaxzell.reminder.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -225,9 +237,16 @@ fun DashboardScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Check if Global Search is active
-            if (searchQuery.trim().isNotEmpty()) {
-                // Global Search Results View
+            // Animated transition between Global Search and Main Content
+            AnimatedContent(
+                targetState = searchQuery.trim().isNotEmpty(),
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(220)) togetherWith fadeOut(animationSpec = tween(220))
+                },
+                label = "DashboardSearchTransition"
+            ) { isSearching ->
+                if (isSearching) {
+                    // Global Search Results View
                 val query = searchQuery.trim()
                 val matchingReminders = allReminders.filter {
                     it.title.contains(query, ignoreCase = true) ||
@@ -621,6 +640,7 @@ fun DashboardScreen(
                 }
             }
         }
+    }
     }
 
     // Quick Add Reminder Dialog
