@@ -1,4 +1,4 @@
-package com.example.ui
+package com.aryaxzell.reminder.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,7 +26,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.ui.theme.*
+import com.aryaxzell.reminder.ui.theme.*
 
 @Composable
 fun NewListScreen(
@@ -311,7 +311,7 @@ fun NewListScreen(
                                     val isSelected = selectedIconName.equals(name, ignoreCase = true)
                                     Box(
                                         modifier = Modifier
-                                            .size(44.dp)
+                                            .size(48.dp)
                                             .clip(CircleShape)
                                             .background(if (isSelected) Color(0xFFE5E5EA) else Color.Transparent)
                                             .border(
@@ -332,7 +332,7 @@ fun NewListScreen(
                                 }
                                 // Pad empty slots in row if less than 6
                                 repeat(6 - rowIcons.size) {
-                                    Spacer(modifier = Modifier.size(44.dp))
+                                    Spacer(modifier = Modifier.size(48.dp))
                                 }
                             }
                         }
@@ -352,10 +352,26 @@ fun ColorCircle(
     onClick: () -> Unit
 ) {
     val color = Color(android.graphics.Color.parseColor(colorHex))
+    val colorName = when (colorHex.uppercase()) {
+        "#FF3B30" -> "Red"
+        "#FF9500" -> "Orange"
+        "#FFCC00" -> "Yellow"
+        "#34C759" -> "Green"
+        "#00C7BE" -> "Mint"
+        "#30B0C7" -> "Teal"
+        "#32ADE6" -> "Cyan"
+        "#007AFF" -> "Blue"
+        "#5856D6" -> "Indigo"
+        "#AF52DE" -> "Purple"
+        "#FF2D55" -> "Pink"
+        "#A2845E" -> "Brown"
+        else -> "Color"
+    }
 
     Box(
         modifier = Modifier
-            .size(44.dp)
+            .size(48.dp)
+            .semantics { contentDescription = colorName }
             .clickable { onClick() }
             .border(
                 width = if (isSelected) 3.dp else 0.dp,

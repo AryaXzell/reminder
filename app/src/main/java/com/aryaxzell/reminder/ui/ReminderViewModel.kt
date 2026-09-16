@@ -1,4 +1,4 @@
-package com.example.ui
+package com.aryaxzell.reminder.ui
 
 import android.app.Application
 import android.content.Context
@@ -6,10 +6,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.data.Reminder
-import com.example.data.ReminderList
-import com.example.data.ReminderRepository
-import com.example.notification.ReminderAlarmScheduler
+import com.aryaxzell.reminder.data.Reminder
+import com.aryaxzell.reminder.data.ReminderList
+import com.aryaxzell.reminder.data.ReminderRepository
+import com.aryaxzell.reminder.notification.ReminderAlarmScheduler
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
@@ -244,6 +244,10 @@ class ReminderViewModel(
 
     fun getRemindersForSmartList(type: SmartListType): List<Reminder> {
         return smartListReminders.value[type] ?: emptyList()
+    }
+
+    fun getSmartListReminders(type: SmartListType): Flow<List<Reminder>> {
+        return smartListReminders.map { it[type] ?: emptyList() }
     }
 
     fun isDueToday(timestamp: Long?): Boolean {

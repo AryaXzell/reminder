@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -35,7 +35,9 @@ jobs:
 
       - name: Prepare Consistent Keystore
         run: |
-          if [ -f "debug.keystore.base64" ]; then
+          if [ -n "${{ secrets.DEBUG_KEYSTORE_BASE64 }}" ]; then
+            echo "${{ secrets.DEBUG_KEYSTORE_BASE64 }}" | base64 -d > debug.keystore
+          elif [ -f "debug.keystore.base64" ]; then
             base64 -d debug.keystore.base64 > debug.keystore
           elif [ ! -f "debug.keystore" ]; then
             keytool -genkeypair -v \
@@ -67,11 +69,17 @@ jobs:
           echo "Building version $VERSION_NAME ($VERSION_CODE)"
 
       - name: Grant Execute Permission for Gradle
-        run: chmod +x gradlew || true
+        run: chmod +x gradlew
 
-      - name: Build Signed APKs
+      - name: Build Debug APK
         run: |
-          gradle :app:assembleRelease :app:assembleDebug \
+          ./gradlew :app:assembleDebug \
+            -PversionCode=${{ steps.versioning.outputs.VERSION_CODE }} \
+            -PversionName=${{ steps.versioning.outputs.VERSION_NAME }}
+
+      - name: Build Signed Release APK
+        run: |
+          ./gradlew :app:assembleRelease \
             -PversionCode=${{ steps.versioning.outputs.VERSION_CODE }} \
             -PversionName=${{ steps.versioning.outputs.VERSION_NAME }}
 
@@ -79,14 +87,27 @@ jobs:
         run: |
           mkdir -p dist
           
-          # Copy release and debug APKs with clear version naming
-          if [ -f "app/build/outputs/apk/release/app-release.apk" ]; then
-            cp app/build/outputs/apk/release/app-release.apk dist/Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-release.apk
-          fi
+          # Copy all APKs (includes arm64, armeabi-v7a, dan universal)
+          find app/build/outputs/apk -name "*.apk" -type f | while read -r apk; do
+            cp "$apk" "dist/$(basename "$apk")"
+          done
           
-          if [ -f "app/build/outputs/apk/debug/app-debug.apk" ]; then
-            cp app/build/outputs/apk/debug/app-debug.apk dist/Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-debug.apk
-          fi
+          # Rename untuk clarity
+          cd dist
+          for file in *.apk; do
+            if [[ "$file" == *"arm64"* ]]; then
+              newname="${file%%.apk}-arm64-v8a.apk"
+              mv "$file" "$newname" 2>/dev/null || true
+            elif [[ "$file" == *"armeabi"* ]]; then
+              newname="${file%%.apk}-armeabi-v7a.apk"
+              mv "$file" "$newname" 2>/dev/null || true
+            elif [[ "$file" == *"universal"* ]]; then
+              newname="${file%%.apk}-universal.apk"
+              mv "$file" "$newname" 2>/dev/null || true
+            fi
+          done
+          
+          ls -lah
 
       - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4

@@ -1,3 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Reminder</string>
+    <string name="new_reminder">New Reminder</string>
+    <string name="add_list">Add List</string>
+    <string name="search_reminders">Search Reminders</string>
+    <string name="delete_reminder">Delete Reminder</string>
+    <string name="delete_reminder_title">Delete Reminder?</string>
+    <string name="delete_reminder_message">Are you sure you want to delete this reminder? This action cannot be undone.</string>
+    <string name="delete_list_title">Delete List?</string>
+    <string name="delete_list_message">Deleting this list will also delete all reminders inside it. This action cannot be undone.</string>
+    <string name="clear_completed">Clear Completed</string>
+    <string name="clear_completed_title">Clear Completed Reminders?</string>
+    <string name="clear_completed_message">Are you sure you want to clear all completed reminders in this list? This cannot be undone.</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="clear">Clear</string>
+    <string name="today">Today</string>
+    <string name="scheduled">Scheduled</string>
+    <string name="all">All</string>
+    <string name="flagged">Flagged</string>
+    <string name="completed">Completed</string>
+    <string name="no_reminders">No Reminders</string>
+    <string name="search_results">SEARCH RESULTS</string>
+    <string name="no_reminders_found">No Reminders Found</string>
+    <string name="show_completed">Show Completed</string>
+    <string name="hide_completed">Hide Completed</string>
+    <string name="group_by_time">Group by Time</string>
 </resources>

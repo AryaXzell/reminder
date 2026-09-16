@@ -1,4 +1,4 @@
-package com.example.ui
+package com.aryaxzell.reminder.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -29,9 +29,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.data.Reminder
-import com.example.data.ReminderList
-import com.example.ui.theme.*
+import com.aryaxzell.reminder.data.Reminder
+import com.aryaxzell.reminder.data.ReminderList
+import com.aryaxzell.reminder.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
 
