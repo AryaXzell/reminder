@@ -1,10 +1,12 @@
 package com.aryaxzell.reminder.data
 
+import androidx.compose.runtime.Immutable
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
+@Immutable
 @Entity(tableName = "reminder_lists")
 data class ReminderList(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -16,6 +18,7 @@ data class ReminderList(
     val sortOrder: Int = 0
 )
 
+@Immutable
 @Entity(
     tableName = "reminders",
     foreignKeys = [

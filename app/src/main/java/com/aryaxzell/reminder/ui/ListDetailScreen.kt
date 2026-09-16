@@ -78,6 +78,10 @@ fun ListDetailScreen(
     val titleColor = Color(android.graphics.Color.parseColor(titleColorHex))
 
     // Active reminders inside this list context
+    val listColorMap = remember(lists) {
+        lists.associate { it.id to it.colorHex }
+    }
+
     val filteredReminders = remember(listId, smartType, remindersState) {
         when {
             smartType != null -> viewModel.getRemindersForSmartList(smartType)
@@ -536,10 +540,8 @@ fun ListDetailScreen(
                                     }
                                 }
                             } else {
-                                items(itemsInSection) { reminder ->
-                                    val listColor = remember(lists, reminder.listId) {
-                                        lists.find { it.id == reminder.listId }?.colorHex ?: "#007AFF"
-                                    }
+                                items(itemsInSection, key = { it.id }) { reminder ->
+                                    val listColor = listColorMap[reminder.listId] ?: "#007AFF"
                                     ReminderRowItem(
                                         reminder = reminder,
                                         listColorHex = listColor,
@@ -552,10 +554,8 @@ fun ListDetailScreen(
                         }
                     } else {
                         // Regular list detail flat view
-                        items(filteredReminders) { reminder ->
-                            val listColor = remember(lists, reminder.listId) {
-                                lists.find { it.id == reminder.listId }?.colorHex ?: "#007AFF"
-                            }
+                        items(filteredReminders, key = { it.id }) { reminder ->
+                            val listColor = listColorMap[reminder.listId] ?: "#007AFF"
                             ReminderRowItem(
                                 reminder = reminder,
                                 listColorHex = listColor,
@@ -597,10 +597,8 @@ fun ListDetailScreen(
                             Divider(color = iOSSeparator, thickness = 0.5.dp)
                         }
 
-                        items(completedInList) { reminder ->
-                            val listColor = remember(lists, reminder.listId) {
-                                lists.find { it.id == reminder.listId }?.colorHex ?: "#007AFF"
-                            }
+                        items(completedInList, key = { it.id }) { reminder ->
+                            val listColor = listColorMap[reminder.listId] ?: "#007AFF"
                             ReminderRowItem(
                                 reminder = reminder,
                                 listColorHex = listColor,

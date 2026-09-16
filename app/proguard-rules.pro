@@ -1,8 +1,8 @@
 # Room Database keep rules
 -keep class * extends androidx.room.RoomDatabase
 -dontwarn androidx.room.paging.**
--keep class com.example.data.** { *; }
--keepclassmembers class com.example.data.** { *; }
+-keep class com.aryaxzell.reminder.data.** { *; }
+-keepclassmembers class com.aryaxzell.reminder.data.** { *; }
 
 # Kotlin Coroutines & Reflection
 -keepclassmembers class kotlinx.coroutines.** { *; }

@@ -43,6 +43,10 @@ fun DashboardScreen(
     val smartListsVis by viewModel.smartListsVisibility.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
 
+    val activeCountByList = remember(allReminders) {
+        allReminders.filter { !it.isCompleted }.groupingBy { it.listId }.eachCount()
+    }
+
     // State for Quick New Reminder modal
     var showQuickAddReminder by remember { mutableStateOf(false) }
     var selectedReminderForDetail by remember { mutableStateOf<Reminder?>(null) }
@@ -575,9 +579,7 @@ fun DashboardScreen(
                                                         .clickable { onNavigateToNewList(list.id) }
                                                 )
                                             } else {
-                                                val listCount = allReminders.count {
-                                                    it.listId == list.id && !it.isCompleted
-                                                }
+                                                val listCount = activeCountByList[list.id] ?: 0
                                                 Text(
                                                     text = listCount.toString(),
                                                     color = iOSSilver,
