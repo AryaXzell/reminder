@@ -1,5 +1,6 @@
 package com.aryaxzell.reminder.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -51,6 +52,14 @@ fun DashboardScreen(
     var showQuickAddReminder by remember { mutableStateOf(false) }
     var selectedReminderForDetail by remember { mutableStateOf<Reminder?>(null) }
     var listToDelete by remember { mutableStateOf<ReminderList?>(null) }
+
+    val isSearching = searchQuery.trim().isNotEmpty()
+    BackHandler(enabled = isSearching) {
+        searchQuery = ""
+    }
+    BackHandler(enabled = !isSearching && isEditing) {
+        viewModel.setDashboardEditing(false)
+    }
 
     Scaffold(
         containerColor = iOSLightBackground,

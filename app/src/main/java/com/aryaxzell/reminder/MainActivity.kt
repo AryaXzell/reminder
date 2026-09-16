@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -58,6 +59,12 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainContent(viewModel: ReminderViewModel) {
     val currentScreen by viewModel.currentScreen.collectAsState()
+    val screenStack by viewModel.screenStack.collectAsState()
+
+    // Handle system back gesture/button to pop navigation stack instead of exiting app
+    BackHandler(enabled = screenStack.size > 1) {
+        viewModel.popBackStack()
+    }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
@@ -79,21 +86,21 @@ fun MainContent(viewModel: ReminderViewModel) {
                     ListDetailScreen(
                         viewModel = viewModel,
                         listId = screen.listId,
-                        onBack = { viewModel.navigateTo(Screen.Dashboard) }
+                        onBack = { viewModel.popBackStack() }
                     )
                 }
                 is Screen.SmartListDetail -> {
                     ListDetailScreen(
                         viewModel = viewModel,
                         smartType = screen.type,
-                        onBack = { viewModel.navigateTo(Screen.Dashboard) }
+                        onBack = { viewModel.popBackStack() }
                     )
                 }
                 is Screen.NewList -> {
                     NewListScreen(
                         viewModel = viewModel,
                         listId = screen.listId,
-                        onDismiss = { viewModel.navigateTo(Screen.Dashboard) }
+                        onDismiss = { viewModel.popBackStack() }
                     )
                 }
             }

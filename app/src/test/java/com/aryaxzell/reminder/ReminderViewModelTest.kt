@@ -131,4 +131,33 @@ class ReminderViewModelTest {
         assertEquals(1, completedReminders.size)
         assertEquals("Completed Task", completedReminders[0].title)
     }
+
+    @Test
+    fun testBackStackNavigation() = runTest(testDispatcher) {
+        val fakeDao = FakeReminderDao()
+        val repo = ReminderRepository(fakeDao)
+        val viewModel = ReminderViewModel(app, repo)
+        viewModel.completeOnboarding()
+        advanceUntilIdle()
+
+        assertEquals(com.aryaxzell.reminder.ui.Screen.Dashboard, viewModel.currentScreen.value)
+
+        viewModel.navigateTo(com.aryaxzell.reminder.ui.Screen.ListDetail(1))
+        assertEquals(com.aryaxzell.reminder.ui.Screen.ListDetail(1), viewModel.currentScreen.value)
+
+        viewModel.navigateTo(com.aryaxzell.reminder.ui.Screen.NewList(1))
+        assertEquals(com.aryaxzell.reminder.ui.Screen.NewList(1), viewModel.currentScreen.value)
+
+        val poppedFirst = viewModel.popBackStack()
+        assertEquals(true, poppedFirst)
+        assertEquals(com.aryaxzell.reminder.ui.Screen.ListDetail(1), viewModel.currentScreen.value)
+
+        val poppedSecond = viewModel.popBackStack()
+        assertEquals(true, poppedSecond)
+        assertEquals(com.aryaxzell.reminder.ui.Screen.Dashboard, viewModel.currentScreen.value)
+
+        val poppedAtRoot = viewModel.popBackStack()
+        assertEquals(false, poppedAtRoot)
+        assertEquals(com.aryaxzell.reminder.ui.Screen.Dashboard, viewModel.currentScreen.value)
+    }
 }

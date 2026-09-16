@@ -87,33 +87,56 @@ jobs:
         run: |
           mkdir -p dist
           
-          # Copy all APKs (includes arm64, armeabi-v7a, dan universal)
-          find app/build/outputs/apk -name "*.apk" -type f | while read -r apk; do
-            cp "$apk" "dist/$(basename "$apk")"
-          done
-          
-          # Rename untuk clarity
-          cd dist
-          for file in *.apk; do
-            if [[ "$file" == *"arm64"* ]]; then
-              newname="${file%%.apk}-arm64-v8a.apk"
-              mv "$file" "$newname" 2>/dev/null || true
-            elif [[ "$file" == *"armeabi"* ]]; then
-              newname="${file%%.apk}-armeabi-v7a.apk"
-              mv "$file" "$newname" 2>/dev/null || true
-            elif [[ "$file" == *"universal"* ]]; then
-              newname="${file%%.apk}-universal.apk"
-              mv "$file" "$newname" 2>/dev/null || true
+          # Process release APK splits
+          find app/build/outputs/apk/release -name "*.apk" -type f 2>/dev/null | while read -r apk; do
+            filename=$(basename "$apk")
+            if [[ "$filename" == *"arm64"* ]]; then
+              cp "$apk" "dist/Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-release-arm64-v8a.apk"
+            elif [[ "$filename" == *"armeabi"* ]]; then
+              cp "$apk" "dist/Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-release-armeabi-v7a.apk"
+            elif [[ "$filename" == *"universal"* ]]; then
+              cp "$apk" "dist/Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-release-universal.apk"
+            else
+              cp "$apk" "dist/$filename"
             fi
           done
           
-          ls -lah
+          # Process debug APK splits
+          find app/build/outputs/apk/debug -name "*.apk" -type f 2>/dev/null | while read -r apk; do
+            filename=$(basename "$apk")
+            if [[ "$filename" == *"arm64"* ]]; then
+              cp "$apk" "dist/Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-debug-arm64-v8a.apk"
+            elif [[ "$filename" == *"armeabi"* ]]; then
+              cp "$apk" "dist/Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-debug-armeabi-v7a.apk"
+            elif [[ "$filename" == *"universal"* ]]; then
+              cp "$apk" "dist/Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-debug-universal.apk"
+            else
+              cp "$apk" "dist/$filename"
+            fi
+          done
+          
+          echo "=== Generated Artifacts ==="
+          ls -lah dist/
 
-      - name: Upload APK Artifacts
+      - name: Upload Artifact 1: arm64-v8a (64-bit)
         uses: actions/upload-artifact@v4
         with:
-          name: Reminder-App-v${{ steps.versioning.outputs.VERSION_NAME }}
-          path: dist/*.apk
+          name: Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-arm64-v8a
+          path: dist/*arm64-v8a*.apk
+          retention-days: 30
+
+      - name: Upload Artifact 2: armeabi-v7a (32-bit)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-armeabi-v7a
+          path: dist/*armeabi-v7a*.apk
+          retention-days: 30
+
+      - name: Upload Artifact 3: Universal (All ABIs)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Reminder-v${{ steps.versioning.outputs.VERSION_NAME }}-universal
+          path: dist/*universal*.apk
           retention-days: 30
 
       - name: Create GitHub Release

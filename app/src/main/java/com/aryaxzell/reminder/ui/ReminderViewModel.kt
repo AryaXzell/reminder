@@ -33,9 +33,14 @@ class ReminderViewModel(
 
     private val sharedPrefs = application.getSharedPreferences("reminder_prefs", Context.MODE_PRIVATE)
 
-    // Navigation state
-    private val _currentScreen = MutableStateFlow<Screen>(Screen.Dashboard)
-    val currentScreen: StateFlow<Screen> = _currentScreen.asStateFlow()
+    // Navigation state with backstack history
+    private val _screenStack = MutableStateFlow<List<Screen>>(
+        if (sharedPrefs.getBoolean("onboarding_completed", false)) listOf(Screen.Dashboard) else listOf(Screen.Onboarding)
+    )
+    val screenStack: StateFlow<List<Screen>> = _screenStack.asStateFlow()
+    val currentScreen: StateFlow<Screen> = _screenStack
+        .map { it.lastOrNull() ?: Screen.Dashboard }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Screen.Dashboard)
 
     // Onboarding completion state
     private val _isOnboardingCompleted = MutableStateFlow(sharedPrefs.getBoolean("onboarding_completed", false))
@@ -87,22 +92,33 @@ class ReminderViewModel(
     )
     val smartListsVisibility: StateFlow<Map<SmartListType, Boolean>> = _smartListsVisibility.asStateFlow()
 
-    init {
-        // If onboarding is not completed, set current screen to Onboarding
-        if (!_isOnboardingCompleted.value) {
-            _currentScreen.value = Screen.Onboarding
+    // Navigation functions
+    fun navigateTo(screen: Screen) {
+        if (screen == Screen.Dashboard) {
+            _screenStack.value = listOf(Screen.Dashboard)
+        } else {
+            val list = _screenStack.value.toMutableList()
+            if (list.lastOrNull() != screen) {
+                list.add(screen)
+                _screenStack.value = list
+            }
         }
     }
 
-    // Navigation functions
-    fun navigateTo(screen: Screen) {
-        _currentScreen.value = screen
+    fun popBackStack(): Boolean {
+        val list = _screenStack.value.toMutableList()
+        if (list.size > 1) {
+            list.removeAt(list.size - 1)
+            _screenStack.value = list
+            return true
+        }
+        return false
     }
 
     fun completeOnboarding() {
         sharedPrefs.edit().putBoolean("onboarding_completed", true).apply()
         _isOnboardingCompleted.value = true
-        _currentScreen.value = Screen.Dashboard
+        _screenStack.value = listOf(Screen.Dashboard)
     }
 
     fun toggleDashboardEditing() {
